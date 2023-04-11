@@ -1,0 +1,19 @@
+            
+            public void CMDCommand()
+            {
+              ProcessStartInfo processInfo = new ProcessStartInfo("cmd.exe");
+              processInfo.CreateNoWindow = true;
+              processInfo.UseShellExecute = false;
+              processInfo.RedirectStandardInput = true;
+              Process process = Process.Start(processInfo);
+
+              //List<string> _Line = {}; .add()
+              StreamWriter reader = process.StandardInput;
+              reader.WriteLine(@"robocopy D:\A.txt C:\");
+              reader.WriteLine(@"robocopy D:\B.txt C:\");
+              reader.WriteLine(@"robocopy D:\C.txt C:\");
+
+              reader.Close();
+              process.WaitForExit();
+              Console.ReadLine();
+            }
