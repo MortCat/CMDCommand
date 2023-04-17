@@ -1,19 +1,29 @@
-            
-            public void CMDCommand()
+        private static string CMDCommand(string command)
+        {
+            try
             {
-              ProcessStartInfo processInfo = new ProcessStartInfo("cmd.exe");
-              processInfo.CreateNoWindow = true;
-              processInfo.UseShellExecute = false;
-              processInfo.RedirectStandardInput = true;
-              Process process = Process.Start(processInfo);
+                Process process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = @"c:\windows\system32\cmd.exe",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    //Arguments = "Start /wait ",
+                    RedirectStandardError = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                });
 
-              //List<string> _Line = {}; .add()
-              StreamWriter reader = process.StandardInput;
-              reader.WriteLine(@"robocopy D:\A.txt C:\");
-              reader.WriteLine(@"robocopy D:\B.txt C:\");
-              reader.WriteLine(@"robocopy D:\C.txt C:\");
-
-              reader.Close();
-              process.WaitForExit();
-              Console.ReadLine();
+                process.StandardInput.WriteLine(command);
+                process.StandardInput.Flush();
+                process.StandardInput.Close();
+                process.WaitForExit();
+                //process.Dispose();
+                return process.StandardOutput.ReadToEnd();
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Command Failed. {ex}");
+                return "Command Failed.";
+            }
+
+        }
